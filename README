@@ -1,13 +1,5 @@
 # build wasm
-  docker run -it -v $PWD:/pwd -w /pwd ghcr.io/webassembly/wasi-sdk /opt/wasi-sdk/bin/clang++ -target wasm32-wasi --sysroot /opt/wasi-sdk/share/wasi-sysroot/ -I. -Iutf8 *.cpp -Wl,--allow-undefined -o main.wasm
+  docker run -it -v $PWD:/pwd -w /pwd ghcr.io/webassembly/wasi-sdk /opt/wasi-sdk/bin/clang++ -target wasm32-wasi --sysroot /opt/wasi-sdk/share/wasi-sysroot main.cpp -Wl,--allow-undefined -o main.wasm
 
 # run 
   docker run -it -v $PWD:/pwd -w /pwd golang:1.23.3 sh -c "go get . && go run main.go"
-
-# output
-  a: 
-  b: hello
-
-# expected output
-  a: hello
-  b: hello

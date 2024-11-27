@@ -1,20 +1,33 @@
-#include "tstring.h"
 #include <iostream>
 
-const TagLib::String a("hello");
-const std::string b = "hello";
+const auto EXAMPLE = std::make_shared<std::wstring>(L"hello");
 
-__attribute__((export_name("do_debug"))) void do_debug() {
-  std::cout << "a: " << a << std::endl;
-  std::cout << "b: " << b << std::endl;
+std::string convertString(std::wstring &input) {
+  std::string result;
+  result.resize(input.size() * 4);
 
-  std::cout << std::endl;
+  size_t pos = 0;
+  const wchar_t *data_start = input.data();
+  const wchar_t *data_end = data_start + input.size();
 
-  std::cout << "a size: " << a.size() << std::endl;
+  while (data_start != data_end) {
+    result[pos] = static_cast<char>(*data_start++);
+    pos++;
+  }
 
-  const auto &data = a.data(TagLib::String::UTF8);
-  for (size_t i = 0; i < data.size(); i++)
-    std::cout << "a byte " << i << ": " << (int)data[i] << std::endl;
+  result.resize(pos);
+  return result;
 }
 
-int main() { return 0; };
+__attribute__((export_name("do_debug"))) void do_debug() {
+  auto s = convertString(*EXAMPLE);
+  std::cout << "b: " << s << std::endl;
+  std::cout << "b size: " << s.size() << std::endl;
+}
+
+int main() {
+  auto s = convertString(*EXAMPLE);
+  std::cout << "b: " << s << std::endl;
+  std::cout << "b size: " << s.size() << std::endl;
+  return 0;
+};

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"os"
 
 	"github.com/tetratelabs/wazero"
@@ -15,8 +16,7 @@ var binary []byte
 func main() {
 	cfg := wazero.
 		NewRuntimeConfig().
-		WithDebugInfoEnabled(true).
-		WithMemoryCapacityFromMax(true)
+		WithDebugInfoEnabled(true)
 
 	ctx := context.Background()
 	runtime := wazero.NewRuntimeWithConfig(ctx, cfg)
@@ -38,13 +38,16 @@ func main() {
 	moduleConfig := wazero.
 		NewModuleConfig().
 		WithStdout(os.Stdout).
-		WithStderr(os.Stderr).
-		WithFSConfig(wazero.NewFSConfig().WithDirMount("/", "/"))
+		WithStderr(os.Stderr)
+
+	fmt.Printf("+++ start\n")
 
 	m, err := runtime.InstantiateModule(ctx, compiled, moduleConfig)
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("+++ func\n")
 
 	if _, err := m.ExportedFunction("do_debug").Call(ctx); err != nil {
 		panic(err)
